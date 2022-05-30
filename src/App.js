@@ -1,30 +1,14 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { fetchPokemonsAsync } from "./redux";
 
 export default function App() {
-  const [pokemons, setPokemons] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
+  const dispatch = useDispatch();
+  const { pokemons, isFetching } = useSelector((state) => state.Pokemons);
 
   useEffect(() => {
-    async function getPokemons() {
-      if (!isFetching) {
-        setIsFetching(true);
-
-        try {
-          const res = await axios.get(
-            "https://pokeapi.co/api/v2/pokemon?limit=60"
-          );
-
-          setPokemons(res.data.results);
-        } catch (err) {
-          console.log(err);
-        } finally {
-          setIsFetching(false);
-        }
-      }
-    }
-
-    getPokemons();
+    dispatch(fetchPokemonsAsync());
   }, []);
 
   if (isFetching) return <h2>Loading ...</h2>;
